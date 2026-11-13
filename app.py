@@ -11,6 +11,7 @@ import re
 import secrets
 import sqlite3
 import subprocess
+import sys
 import threading
 import time
 import unicodedata
@@ -21,11 +22,13 @@ from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 ROOT = Path(__file__).resolve().parent
+FROZEN = getattr(sys, "frozen", False)
+APP_DIR = Path(sys.executable).resolve().parent if FROZEN else ROOT
 HOME = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
-OUTPUT = ROOT / "outputs"
+OUTPUT = APP_DIR / "outputs"
 DATABASE = OUTPUT / "search.sqlite"
 RUNTIME = OUTPUT / "runtime.json"
-PORT = 58974  # 固定本机地址，重启后收藏和右侧浏览器的旧页面仍能使用。
+PORT = 0 if FROZEN else 58974  # 便携包使用空闲端口，避免影响其他实例。
 PAGE_SIZE = 50
 ID_RE = re.compile(r"^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$", re.I)
 
@@ -525,7 +528,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send({"error": "请求来源不匹配"}, 403)
             return False
         if not secrets.compare_digest(self.headers.get("X-Project-Finder-Token", "").encode(), self.server.token.encode()):
-            self.send({"error": "请从项目查找助手启动器打开"}, 403)
+            self.send({"error": "请从CodeX 项目查找器启动器打开"}, 403)
             return False
         self.server.last_active = time.monotonic()
         return True
@@ -628,7 +631,7 @@ def acquire_instance():
     kernel = ctypes.WinDLL("kernel32", use_last_error=True)
     kernel.CreateMutexW.restype = ctypes.c_void_p
     kernel.CreateMutexW.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_wchar_p]
-    name = "Local\\CodexSessionFinder-" + hashlib.sha1(str(ROOT).encode()).hexdigest()[:16]
+    name = "Local\\CodeXProjectFinder-" + hashlib.sha1(str(APP_DIR).casefold().encode()).hexdigest()[:16]
     handle = kernel.CreateMutexW(None, False, name)
     if not handle:
         raise OSError("无法创建程序运行锁")
@@ -644,7 +647,10 @@ def acquire_instance():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--open", action="store_true")
+    launch = parser.add_mutually_exclusive_group()
+    launch.add_argument("--open", dest="open", action="store_true")
+    launch.add_argument("--no-open", dest="open", action="store_false")
+    parser.set_defaults(open=FROZEN)
     parser.add_argument("--index-only", action="store_true")
     args = parser.parse_args()
     OUTPUT.mkdir(exist_ok=True)
@@ -673,7 +679,7 @@ def main():
         logging.error("local port %s could not be bound: %s", PORT, type(exc).__name__)
         if os.name == "nt":
             import ctypes
-            ctypes.windll.user32.MessageBoxW(None, f"本机端口 {PORT} 当前不可用。未改动其他程序，请稍后重新启动项目查找助手。", "项目查找助手", 0)
+            ctypes.windll.user32.MessageBoxW(None, f"本机端口 {PORT} 当前不可用。未改动其他程序，请稍后重新启动CodeX 项目查找器。", "CodeX 项目查找器", 0)
         return
     server.daemon_threads = True
     server.indexer, server.token = indexer, secrets.token_urlsafe(32)

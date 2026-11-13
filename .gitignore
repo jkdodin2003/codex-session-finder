@@ -8,3 +8,6 @@ __pycache__/
 *.log
 *.jsonl
 *.exe
+/build/
+/dist/
+/release-assets/

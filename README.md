@@ -1,10 +1,10 @@
-# Codex Session Finder · Codex 对话寻迹
+# CodeX Project Finder · CodeX 项目查找器
 
 [中文](#中文) | [English](#english)
 
 ## 中文
 
-Codex 对话寻迹是一款 Windows 本地工具，帮你找回保存在本机的 Codex 对话。项目多、聊天多时，有些较早的对话可能不容易在 Codex 原界面里找到：可以在这里按项目、标题或对话正文搜索，再打开原对话继续工作。
+CodeX 项目查找器是一款 Windows 本地工具，帮你找回保存在本机的 Codex 对话。项目多、聊天多时，有些较早的对话可能不容易在 Codex 原界面里找到：可以在这里按项目、标题或对话正文搜索，再打开原对话继续工作。
 
 全文搜索支持短关键词，包括单个字符或字母。它查找的是已索引的本地对话内容，而不是推测未同步的记录；输入越短，结果通常越多。最近对话视图只搜索标题，查正文请切换到全文搜索。
 
@@ -18,9 +18,9 @@ Codex 对话寻迹是一款 Windows 本地工具，帮你找回保存在本机�
 
 ### 使用
 
-需要 Windows、Python 3.10 或更新版本，以及已在本机使用的 Codex。SQLite 需支持 FTS5 的 trigram 分词器；CLI 接续还需要 Windows Terminal 和 Codex CLI。
+在 [Releases](https://github.com/jkdodin2003/codex-session-finder/releases/latest) 下载 Windows x64 ZIP，把整个文件夹解压到可写位置，双击 `CodeXProjectFinder.exe`。无需另装 Python，不要单独移动 EXE。程序需要本机 Codex 记录才有内容可搜；CLI 接续还需要 Windows Terminal 和 Codex CLI。
 
-在项目目录打开 PowerShell，运行：
+从源码启动需要 Python 3.10 或更新版本，以及支持 FTS5 trigram 分词器的 SQLite。在项目目录打开 PowerShell，运行：
 
 ```powershell
 python -X utf8 app.py --open
@@ -44,7 +44,7 @@ python -X utf8 selfcheck.py
 
 ## English
 
-Codex Session Finder is a local Windows tool for finding conversations stored by Codex on your computer. When older conversations become difficult to locate in the Codex interface, search by project, title, or conversation text and open the original session to continue.
+CodeX Project Finder is a local Windows tool for finding conversations stored by Codex on your computer. When older conversations become difficult to locate in the Codex interface, search by project, title, or conversation text and open the original session to continue.
 
 Full-text search supports short queries, including a single character or letter. Results are limited to local content that has been indexed; short queries can return many matches. The Recent view searches titles only—switch to full-text search to search message bodies.
 
@@ -58,9 +58,9 @@ Full-text search supports short queries, including a single character or letter.
 
 ### Getting started
 
-Requires Windows, Python 3.10 or newer, Codex local data, and SQLite with FTS5 trigram support. Windows Terminal and Codex CLI are required for CLI resume.
+Download the Windows x64 ZIP from [Releases](https://github.com/jkdodin2003/codex-session-finder/releases/latest), extract the entire folder to a writable location, and double-click `CodeXProjectFinder.exe`. Python is bundled; keep the EXE with the extracted files. You need local Codex records to search, and Windows Terminal and Codex CLI to resume a session in the CLI.
 
-From the project directory, run:
+To run from source, use Python 3.10 or newer with SQLite FTS5 trigram support. From the project directory, run:
 
 ```powershell
 python -X utf8 app.py --open
