@@ -33,6 +33,8 @@ def run():
         assert app.search_threads(database, "示例项目乙")["results"][0]["id"] == b
         assert not app.search_threads(database, "示例项目乙", archived=False)["results"]
         assert app.search_threads(database, "USB 8500")["total"] == 1  # 关键词可以分别命中不同消息。
+        assert app.search_threads(database, "U")["total"] >= 1
+        assert app.search_threads(database, "压")["total"] >= 1
         assert app.search_threads(database, "50%")["total"] == 1
         assert app.search_threads(database, "参数_表")["total"] == 1
         assert not app.search_threads(database, "' OR 1=1 --")["results"]
